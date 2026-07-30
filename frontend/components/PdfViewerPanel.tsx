@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   FileText, ChevronLeft, ChevronRight, Bookmark, Sparkles, ZoomIn,
-  ZoomOut, Maximize2, Layers, Image as ImageIcon, Table as TableIcon, Sigma
+  ZoomOut, Image as ImageIcon, Table as TableIcon, Sigma, Copy, Check
 } from 'lucide-react';
 
 interface BoundingBox {
@@ -38,9 +38,10 @@ export const PdfViewerPanel: React.FC<PdfViewerPanelProps> = ({
 }) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [zoomLevel, setZoomLevel] = useState<number>(100);
+  const [copied, setCopied] = useState<boolean>(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Synchronize page when active source ref is clicked
+  // Synchronize page when active source ref is selected
   useEffect(() => {
     if (activeSourceRef && activeSourceRef.page) {
       setCurrentPage(activeSourceRef.page);
@@ -66,16 +67,22 @@ export const PdfViewerPanel: React.FC<PdfViewerPanelProps> = ({
   const pageTables = paper?.tables?.filter((t: any) => t.page === currentPage) || [];
   const pageEquations = paper?.equations?.filter((eq: any) => eq.page === currentPage) || [];
 
-  // Determine active bounding box overlay
+  // Active bounding box overlay
   const activeBbox = (activeSourceRef && (activeSourceRef.page === currentPage || !activeSourceRef.page))
     ? activeSourceRef.bbox
     : null;
+
+  const handleCopySnippet = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
     <div className="glass-panel" style={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden', border: '1px solid rgba(6, 182, 212, 0.4)' }}>
       {/* PDF Reader Header Bar */}
       <div style={{
-        padding: '10px 16px',
+        padding: '12px 16px',
         borderBottom: '1px solid var(--border-color)',
         display: 'flex',
         alignItems: 'center',
@@ -85,7 +92,7 @@ export const PdfViewerPanel: React.FC<PdfViewerPanelProps> = ({
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', overflow: 'hidden' }}>
           <FileText size={18} style={{ color: 'var(--accent-cyan)', flexShrink: 0 }} />
-          <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#f8fafc', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          <span style={{ fontSize: '0.88rem', fontWeight: 700, color: '#f8fafc', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {paperTitle}
           </span>
         </div>
@@ -100,7 +107,7 @@ export const PdfViewerPanel: React.FC<PdfViewerPanelProps> = ({
             >
               <ZoomOut size={14} />
             </button>
-            <span style={{ fontSize: '0.72rem', color: '#cbd5e1', fontFamily: 'var(--font-mono)', width: '36px', textAlign: 'center' }}>
+            <span style={{ fontSize: '0.75rem', color: '#cbd5e1', fontFamily: 'var(--font-mono)', width: '38px', textAlign: 'center', fontWeight: 600 }}>
               {zoomLevel}%
             </span>
             <button
@@ -120,7 +127,7 @@ export const PdfViewerPanel: React.FC<PdfViewerPanelProps> = ({
             >
               <ChevronLeft size={18} />
             </button>
-            <span style={{ fontSize: '0.8rem', color: '#f8fafc', fontWeight: 600, fontFamily: 'var(--font-mono)' }}>
+            <span style={{ fontSize: '0.82rem', color: '#f8fafc', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>
               {currentPage} / {totalPages}
             </span>
             <button
@@ -134,22 +141,24 @@ export const PdfViewerPanel: React.FC<PdfViewerPanelProps> = ({
         </div>
       </div>
 
-      {/* Active Source Ref Banner */}
+      {/* Active Source Citation Banner */}
       {activeSourceRef && (
         <div style={{
-          background: 'linear-gradient(90deg, rgba(6, 182, 212, 0.2), rgba(59, 130, 246, 0.2))',
+          background: 'linear-gradient(90deg, rgba(6, 182, 212, 0.25), rgba(59, 130, 246, 0.25))',
           borderBottom: '1px solid var(--accent-cyan)',
-          padding: '8px 16px',
-          fontSize: '0.78rem',
+          padding: '9px 16px',
+          fontSize: '0.8rem',
           color: '#22d3ee',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between'
         }}>
           <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 700 }}>
-            <Sparkles size={14} /> ACTIVE CITATION: #{activeSourceRef.ref_id} (Page {currentPage})
+            <Sparkles size={14} /> TRACED SOURCE: #{activeSourceRef.ref_id} (Page {currentPage})
           </span>
-          <span style={{ fontSize: '0.7rem', color: '#94a3b8' }}>Layout BBox Traced</span>
+          <span style={{ fontSize: '0.72rem', color: '#cbd5e1', background: 'rgba(6, 182, 212, 0.2)', padding: '2px 8px', borderRadius: '4px' }}>
+            Layout BBox Highlight Active
+          </span>
         </div>
       )}
 
@@ -171,7 +180,7 @@ export const PdfViewerPanel: React.FC<PdfViewerPanelProps> = ({
           style={{
             width: '100%',
             maxWidth: '520px',
-            minHeight: '680px',
+            minHeight: '700px',
             background: '#0f172a',
             border: '1px solid #1e293b',
             borderRadius: '10px',
@@ -179,8 +188,8 @@ export const PdfViewerPanel: React.FC<PdfViewerPanelProps> = ({
             position: 'relative',
             padding: '36px 28px',
             color: '#cbd5e1',
-            fontSize: `${0.82 * (zoomLevel / 100)}rem`,
-            lineHeight: 1.65,
+            fontSize: `${0.85 * (zoomLevel / 100)}rem`,
+            lineHeight: 1.7,
             transition: 'all 0.2s ease'
           }}
         >
@@ -189,11 +198,11 @@ export const PdfViewerPanel: React.FC<PdfViewerPanelProps> = ({
             display: 'flex',
             justifyContent: 'space-between',
             color: '#64748b',
-            fontSize: '0.68rem',
+            fontSize: '0.7rem',
             marginBottom: '20px',
             borderBottom: '1px solid #1e293b',
             paddingBottom: '8px',
-            fontWeight: 500
+            fontWeight: 600
           }}>
             <span>{paperTitle}</span>
             <span>Page {currentPage} of {totalPages}</span>
@@ -240,27 +249,41 @@ export const PdfViewerPanel: React.FC<PdfViewerPanelProps> = ({
           )}
 
           {/* Real Section Headers & Paragraph Blocks for Current Page */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             {pageSections.map((secTitle, sIdx) => (
-              <h3 key={sIdx} style={{ fontSize: '1rem', fontWeight: 800, color: '#f8fafc', borderBottom: '1px solid #334155', paddingBottom: '4px', marginTop: sIdx > 0 ? '12px' : 0 }}>
+              <h3 key={sIdx} style={{ fontSize: '1.05rem', fontWeight: 800, color: '#f8fafc', borderBottom: '1px solid #334155', paddingBottom: '6px', marginTop: sIdx > 0 ? '14px' : 0 }}>
                 {secTitle}
               </h3>
             ))}
 
-            {pageParagraphs.map((p: any) => {
+            {pageParagraphs.map((p: any, idx: number) => {
               const isTargetPara = activeSourceRef?.ref_id === p.para_id;
               return (
                 <div
-                  key={p.para_id}
+                  key={p.para_id || idx}
                   style={{
-                    background: isTargetPara ? 'rgba(6, 182, 212, 0.12)' : 'transparent',
-                    borderLeft: isTargetPara ? '3px solid var(--accent-cyan)' : 'none',
-                    paddingLeft: isTargetPara ? '10px' : '0',
-                    borderRadius: '4px',
-                    transition: 'all 0.2s ease'
+                    background: isTargetPara ? 'rgba(6, 182, 212, 0.15)' : 'rgba(15, 23, 42, 0.4)',
+                    borderLeft: isTargetPara ? '4px solid var(--accent-cyan)' : '2px solid transparent',
+                    padding: '12px 14px',
+                    borderRadius: '8px',
+                    border: isTargetPara ? '1px solid var(--accent-cyan)' : '1px solid rgba(255, 255, 255, 0.05)',
+                    transition: 'all 0.2s ease',
+                    position: 'relative'
                   }}
                 >
-                  <p style={{ color: isTargetPara ? '#f8fafc' : '#cbd5e1', fontWeight: isTargetPara ? 500 : 400 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                    <span style={{ fontSize: '0.68rem', fontWeight: 700, color: isTargetPara ? 'var(--accent-cyan)' : '#64748b', fontFamily: 'var(--font-mono)' }}>
+                      [{p.para_id?.toUpperCase() || `P${idx+1}`}]
+                    </span>
+                    <button
+                      onClick={() => handleCopySnippet(p.text)}
+                      style={{ background: 'transparent', border: 'none', color: '#64748b', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '2px', fontSize: '0.68rem' }}
+                      title="Copy paragraph text"
+                    >
+                      {copied ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
+                    </button>
+                  </div>
+                  <p style={{ color: isTargetPara ? '#f8fafc' : '#cbd5e1', fontWeight: isTargetPara ? 500 : 400, lineHeight: 1.65 }}>
                     {p.text}
                   </p>
                 </div>
@@ -269,26 +292,26 @@ export const PdfViewerPanel: React.FC<PdfViewerPanelProps> = ({
 
             {/* Figures on this page */}
             {pageFigures.map((fig: any) => (
-              <div key={fig.figure_id} style={{ background: '#090d16', border: '1px solid #1e293b', borderRadius: '8px', padding: '16px', textAlign: 'center', margin: '10px 0' }}>
+              <div key={fig.figure_id} style={{ background: '#090d16', border: '1px solid #1e293b', borderRadius: '10px', padding: '18px', textAlign: 'center', margin: '10px 0' }}>
                 <ImageIcon size={36} style={{ color: 'var(--accent-cyan)', margin: '0 auto 8px' }} />
-                <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#f8fafc' }}>{fig.caption}</div>
-                <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '4px' }}>{fig.explanation}</div>
+                <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#f8fafc' }}>{fig.caption}</div>
+                <div style={{ fontSize: '0.78rem', color: '#94a3b8', marginTop: '6px', lineHeight: 1.5 }}>{fig.explanation}</div>
               </div>
             ))}
 
             {/* Tables on this page */}
             {pageTables.map((tab: any) => (
-              <div key={tab.table_id} style={{ background: '#090d16', border: '1px solid #1e293b', borderRadius: '8px', padding: '14px', margin: '10px 0' }}>
-                <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--accent-cyan)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <TableIcon size={14} /> {tab.caption}
+              <div key={tab.table_id} style={{ background: '#090d16', border: '1px solid #1e293b', borderRadius: '10px', padding: '16px', margin: '10px 0' }}>
+                <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--accent-cyan)', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <TableIcon size={16} /> {tab.caption}
                 </div>
                 {tab.extracted_data && (
-                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.75rem' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.78rem' }}>
                     <tbody>
                       {tab.extracted_data.map((row: string[], rIdx: number) => (
                         <tr key={rIdx} style={{ borderBottom: '1px solid #1e293b', background: rIdx === 0 ? 'rgba(30, 41, 59, 0.7)' : 'transparent' }}>
                           {row.map((cell: string, cIdx: number) => (
-                            <td key={cIdx} style={{ padding: '6px 8px', color: rIdx === 0 ? '#38bdf8' : '#cbd5e1' }}>{cell}</td>
+                            <td key={cIdx} style={{ padding: '8px 10px', color: rIdx === 0 ? '#38bdf8' : '#cbd5e1', fontWeight: rIdx === 0 ? 600 : 400 }}>{cell}</td>
                           ))}
                         </tr>
                       ))}
@@ -300,11 +323,11 @@ export const PdfViewerPanel: React.FC<PdfViewerPanelProps> = ({
 
             {/* Equations on this page */}
             {pageEquations.map((eq: any) => (
-              <div key={eq.eq_id} style={{ background: '#080d1a', border: '1px solid rgba(139, 92, 246, 0.3)', borderRadius: '8px', padding: '12px', textAlign: 'center', margin: '10px 0' }}>
-                <div style={{ fontSize: '0.7rem', color: 'var(--accent-purple)', fontWeight: 700, marginBottom: '4px', textTransform: 'uppercase' }}>
+              <div key={eq.eq_id} style={{ background: '#080d1a', border: '1px solid rgba(139, 92, 246, 0.4)', borderRadius: '10px', padding: '14px', textAlign: 'center', margin: '10px 0' }}>
+                <div style={{ fontSize: '0.7rem', color: 'var(--accent-purple)', fontWeight: 700, marginBottom: '6px', textTransform: 'uppercase' }}>
                   EQUATION FORMULATION #{eq.eq_id}
                 </div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.95rem', color: '#a7f3d0' }}>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1rem', color: '#a7f3d0' }}>
                   {eq.latex}
                 </div>
               </div>
@@ -313,15 +336,15 @@ export const PdfViewerPanel: React.FC<PdfViewerPanelProps> = ({
             {/* Fallback layout representation if page paragraphs empty */}
             {pageParagraphs.length === 0 && pageFigures.length === 0 && pageTables.length === 0 && pageEquations.length === 0 && (
               <div style={{ textAlign: 'center', color: '#64748b', padding: '40px 0' }}>
-                <FileText size={32} style={{ margin: '0 auto 8px', opacity: 0.5 }} />
-                <p style={{ fontSize: '0.85rem' }}>Page {currentPage} Layout Content</p>
-                <p style={{ fontSize: '0.75rem', marginTop: '4px' }}>Extracted PyMuPDF text blocks for page {currentPage}.</p>
+                <FileText size={36} style={{ margin: '0 auto 8px', opacity: 0.5 }} />
+                <p style={{ fontSize: '0.9rem', fontWeight: 600 }}>Page {currentPage} Layout Content</p>
+                <p style={{ fontSize: '0.78rem', marginTop: '4px' }}>Extracted PyMuPDF layout blocks for page {currentPage}.</p>
               </div>
             )}
           </div>
 
           {/* Document Footer Margin */}
-          <div style={{ marginTop: '30px', paddingTop: '10px', borderTop: '1px solid #1e293b', color: '#475569', fontSize: '0.65rem', textAlign: 'center' }}>
+          <div style={{ marginTop: '30px', paddingTop: '10px', borderTop: '1px solid #1e293b', color: '#475569', fontSize: '0.68rem', textAlign: 'center' }}>
             PaperPilot Grounded Layout Reader — Page {currentPage}
           </div>
         </div>
