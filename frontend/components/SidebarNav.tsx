@@ -3,7 +3,7 @@
 import React from 'react';
 import {
   FileText, ShieldCheck, AlertTriangle, Image as ImageIcon,
-  Sigma, Network, UserCheck, Columns, ChevronLeft, ChevronRight
+  Sigma, Network, Columns, ChevronLeft, ChevronRight
 } from 'lucide-react';
 
 interface SidebarNavProps {
@@ -37,9 +37,8 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
       ]
     },
     {
-      title: 'REVIEW & COMPARE',
+      title: 'COMPARISON',
       items: [
-        { id: 'mentor', label: 'Research Mentor', icon: UserCheck },
         { id: 'comparison', label: 'Paper Comparison', icon: Columns }
       ]
     }

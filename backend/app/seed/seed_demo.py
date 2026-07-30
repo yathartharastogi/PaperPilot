@@ -27,9 +27,9 @@ def get_demo_paper() -> CanonicalPaper:
         "para_3": SourceRef(
             ref_id="para_3",
             target_type="paragraph",
-            page=3,
-            bbox=BoundingBox(x=57.0, y=120.0, width=240.0, height=110.0),
-            text_snippet="An attention function can be described as mapping a query and a set of key-value pairs to an output, where the query, keys, values, and output are all vectors..."
+            page=2,
+            bbox=BoundingBox(x=57.0, y=120.0, width=498.0, height=110.0),
+            text_snippet="The goal of reducing sequential computation also forms the foundation of the Extended Neural GPU, ByteNet and ConvS2S..."
         ),
         "fig_1": SourceRef(
             ref_id="fig_1",
@@ -68,13 +68,181 @@ def get_demo_paper() -> CanonicalPaper:
         ),
         SectionNode(
             section_id="sec_2",
-            title="3. Model Architecture",
+            title="2. Background & Related Work",
             paragraphs=[
                 ParagraphNode(
                     para_id="para_3",
+                    text="The goal of reducing sequential computation also forms the foundation of the Extended Neural GPU, ByteNet and ConvS2S, all of which use convolutional neural networks as basic building blocks. In these models, the number of operations required to relate signals from two arbitrary input or output positions grows in the distance between positions.",
+                    page=2,
+                    bbox=BoundingBox(x=57.0, y=120.0, width=498.0, height=110.0)
+                ),
+                ParagraphNode(
+                    para_id="para_4",
+                    text="Self-attention, sometimes called intra-attention, is an attention mechanism relating different positions of a single sequence in order to compute a representation of the sequence. Self-attention has been used successfully in a variety of tasks including reading comprehension and abstractive summarization.",
+                    page=2,
+                    bbox=BoundingBox(x=57.0, y=250.0, width=498.0, height=100.0)
+                )
+            ]
+        ),
+        SectionNode(
+            section_id="sec_3",
+            title="3. Model Architecture & Attention Mechanism",
+            paragraphs=[
+                ParagraphNode(
+                    para_id="para_5",
+                    text="Most competitive neural sequence transduction models have an encoder-decoder structure. Here, the encoder maps an input sequence of symbol representations (x1, ..., xn) to a sequence of continuous representations z = (z1, ..., zn). Given z, the decoder then generates an output sequence (y1, ..., ym) of symbols one element at a time.",
+                    page=3,
+                    bbox=BoundingBox(x=57.0, y=120.0, width=498.0, height=110.0)
+                ),
+                ParagraphNode(
+                    para_id="para_6",
                     text="An attention function can be described as mapping a query and a set of key-value pairs to an output, where the query, keys, values, and output are all vectors. The output is computed as a weighted sum of the values, where the weight assigned to each value is computed by a compatibility function of the query with the corresponding key.",
                     page=3,
-                    bbox=BoundingBox(x=57.0, y=120.0, width=240.0, height=110.0)
+                    bbox=BoundingBox(x=57.0, y=250.0, width=498.0, height=110.0)
+                )
+            ]
+        ),
+        SectionNode(
+            section_id="sec_4",
+            title="4. Positional Encodings & Sublayers",
+            paragraphs=[
+                ParagraphNode(
+                    para_id="para_7",
+                    text="Since our model contains no recurrence and no convolution, in order for the model to make use of the order of the sequence, we must inject some information about the relative or absolute position of the tokens in the sequence.",
+                    page=4,
+                    bbox=BoundingBox(x=57.0, y=120.0, width=498.0, height=90.0)
+                ),
+                ParagraphNode(
+                    para_id="para_8",
+                    text="To this end, we add 'positional encodings' to the input embeddings at the bottoms of the encoder and decoder stacks. The positional encodings have the same dimension d_model as the embeddings, so that the two can be summed.",
+                    page=4,
+                    bbox=BoundingBox(x=57.0, y=220.0, width=498.0, height=90.0)
+                )
+            ]
+        ),
+        SectionNode(
+            section_id="sec_5",
+            title="5. Why Self-Attention & Path Length Complexity",
+            paragraphs=[
+                ParagraphNode(
+                    para_id="para_9",
+                    text="In this section we compare various aspects of self-attention layers to the recurrent and convolutional layers commonly used for mapping one variable-length sequence of symbol representations (x1, ..., xn) to another sequence of equal length (z1, ..., zn).",
+                    page=5,
+                    bbox=BoundingBox(x=57.0, y=120.0, width=498.0, height=100.0)
+                ),
+                ParagraphNode(
+                    para_id="para_10",
+                    text="One main factor is the total computational complexity per layer. Another is the amount of computation that can be parallelized, as measured by the minimum number of sequential operations required.",
+                    page=5,
+                    bbox=BoundingBox(x=57.0, y=230.0, width=498.0, height=90.0)
+                )
+            ]
+        ),
+        SectionNode(
+            section_id="sec_6",
+            title="6. Training Setup & Hyperparameters",
+            paragraphs=[
+                ParagraphNode(
+                    para_id="para_11",
+                    text="We trained on the standard WMT 2014 English-German dataset consisting of about 4.5 million sentence pairs. Sentences were encoded using byte-pair encoding, which has a shared source-target vocabulary of about 37000 tokens.",
+                    page=6,
+                    bbox=BoundingBox(x=57.0, y=120.0, width=498.0, height=100.0)
+                ),
+                ParagraphNode(
+                    para_id="para_12",
+                    text="We trained our models on one machine with 8 NVIDIA P100 GPUs. For our base models using the hyperparameters described throughout the paper, each training step took about 0.4 seconds. We trained the base models for a total of 100,000 steps or 12 hours.",
+                    page=6,
+                    bbox=BoundingBox(x=57.0, y=230.0, width=498.0, height=110.0)
+                )
+            ]
+        ),
+        SectionNode(
+            section_id="sec_7",
+            title="7. Results — Machine Translation",
+            paragraphs=[
+                ParagraphNode(
+                    para_id="para_13",
+                    text="On the WMT 2014 English-to-German translation task, the big transformer model (Transformer (big) in Table 2) outperforms the best previously reported models (including ensembles) by more than 2.0 BLEU, establishing a new state-of-the-art BLEU score of 28.4.",
+                    page=7,
+                    bbox=BoundingBox(x=57.0, y=120.0, width=498.0, height=110.0)
+                ),
+                ParagraphNode(
+                    para_id="para_14",
+                    text="On the WMT 2014 English-to-French translation task, our big model achieves a BLEU score of 41.8, outperforming all of the previously published single models, at less than 1/4 the training cost of the previous state-of-the-art model.",
+                    page=7,
+                    bbox=BoundingBox(x=57.0, y=240.0, width=498.0, height=110.0)
+                )
+            ]
+        ),
+        SectionNode(
+            section_id="sec_8",
+            title="8. Model Variations & Ablation Studies",
+            paragraphs=[
+                ParagraphNode(
+                    para_id="para_15",
+                    text="To evaluate the importance of different components of the Transformer, we varied our base model in different ways, measuring the change in performance on English-to-German translation on the development set, newstest2013.",
+                    page=8,
+                    bbox=BoundingBox(x=57.0, y=120.0, width=498.0, height=110.0)
+                ),
+                ParagraphNode(
+                    para_id="para_16",
+                    text="We observe that while single-head attention is 0.9 BLEU worse than the best setting, quality also drops off with too many heads. Key dimension d_k is also critical for matching inner vector dimension scaling.",
+                    page=8,
+                    bbox=BoundingBox(x=57.0, y=240.0, width=498.0, height=110.0)
+                )
+            ]
+        ),
+        SectionNode(
+            section_id="sec_9",
+            title="9. English Constituency Parsing",
+            paragraphs=[
+                ParagraphNode(
+                    para_id="para_17",
+                    text="To evaluate if the Transformer can generalize to other tasks we performed experiments on English constituency parsing. This task presents specific challenges: the output is subject to strong structural constraints and is significantly longer than the input.",
+                    page=9,
+                    bbox=BoundingBox(x=57.0, y=120.0, width=498.0, height=110.0)
+                ),
+                ParagraphNode(
+                    para_id="para_18",
+                    text="Our 4-layer Transformer with d_model = 1024 achieved an F1 score of 91.3 when trained on the WSJ portion of the Penn Treebank, outperforming all previously reported sequence-to-sequence models.",
+                    page=9,
+                    bbox=BoundingBox(x=57.0, y=240.0, width=498.0, height=110.0)
+                )
+            ]
+        ),
+        SectionNode(
+            section_id="sec_10",
+            title="10. Conclusion & Future Work",
+            paragraphs=[
+                ParagraphNode(
+                    para_id="para_19",
+                    text="In this work, we presented the Transformer, the first sequence transduction model based entirely on attention, replacing the recurrent layers most commonly used in encoder-decoder architectures with multi-headed self-attention.",
+                    page=10,
+                    bbox=BoundingBox(x=57.0, y=120.0, width=498.0, height=110.0)
+                ),
+                ParagraphNode(
+                    para_id="para_20",
+                    text="We are excited about the future of attention-based models and plan to apply them to other tasks, including image, audio, and video processing.",
+                    page=10,
+                    bbox=BoundingBox(x=57.0, y=240.0, width=498.0, height=90.0)
+                )
+            ]
+        ),
+        SectionNode(
+            section_id="sec_11",
+            title="11. References & Citations",
+            paragraphs=[
+                ParagraphNode(
+                    para_id="para_21",
+                    text="[1] Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Lukasz Kaiser, and Illia Polosukhin. 2017. Attention is all you need. In NIPS.",
+                    page=11,
+                    bbox=BoundingBox(x=57.0, y=120.0, width=498.0, height=90.0)
+                ),
+                ParagraphNode(
+                    para_id="para_22",
+                    text="[2] Dzmitry Bahdanau, Kyunghyun Cho, and Yoshua Bengio. 2014. Neural machine translation by jointly learning to align and translate. In ICLR.",
+                    page=11,
+                    bbox=BoundingBox(x=57.0, y=220.0, width=498.0, height=90.0)
                 )
             ]
         )
@@ -96,7 +264,7 @@ def get_demo_paper() -> CanonicalPaper:
         TableNode(
             table_id="tab_1",
             caption="Table 1: Maximum path lengths, memory size, and unroll complexity per layer for different sequence operations.",
-            page=6,
+            page=5,
             bbox=BoundingBox(x=57.0, y=150.0, width=498.0, height=180.0),
             extracted_data=[
                 ["Layer Type", "Complexity per Layer", "Sequential Operations", "Maximum Path Length"],
@@ -204,82 +372,6 @@ def get_demo_paper() -> CanonicalPaper:
         ]
     )
 
-    study_mode = StudyModeData(
-        flashcards=[
-            QuizQuestion(
-                question_id="flash_1",
-                question_type="flashcard",
-                question="What is the sequential operation complexity of a Self-Attention layer compared to a Recurrent layer?",
-                answer="Self-attention is O(1) sequential steps, whereas Recurrent is O(n) sequential steps.",
-                explanation="Because self-attention compares all token pairs in parallel, sequence length n does not force sequential unrolling.",
-                source_refs=["para_3"]
-            ),
-            QuizQuestion(
-                question_id="flash_2",
-                question_type="flashcard",
-                question="Why is scaling by 1/sqrt(d_k) necessary in Scaled Dot-Product Attention?",
-                answer="To prevent dot products from growing large in high dimensions, which would push softmax into regions with extremely small gradients.",
-                explanation="Without scaling, large key dimensions cause softmax saturation and vanishing gradients.",
-                source_refs=["eq_1"]
-            )
-        ],
-        mcq_quizzes=[
-            QuizQuestion(
-                question_id="mcq_1",
-                question_type="mcq",
-                question="What BLEU score did the Transformer achieve on the WMT 2014 English-to-German translation benchmark?",
-                options=["24.1 BLEU", "28.4 BLEU", "31.0 BLEU", "35.2 BLEU"],
-                answer="28.4 BLEU",
-                explanation="Outperformed previous state-of-the-art models including ensembles while training significantly faster.",
-                source_refs=["para_2"]
-            )
-        ],
-        true_false=[
-            QuizQuestion(
-                question_id="tf_1",
-                question_type="true_false",
-                question="The original Transformer architecture uses convolutional layers to capture local context.",
-                options=["True", "False"],
-                answer="False",
-                explanation="The Transformer eschews recurrence and convolutions entirely, relying solely on self-attention mechanisms.",
-                source_refs=["para_1"]
-            )
-        ],
-        key_terms={
-            "Self-Attention": "An attention mechanism relating different positions of a single sequence to compute a representation of the sequence.",
-            "Multi-Head Attention": "Linearly projecting queries, keys, and values h times with different learned linear projections to attend to information jointly.",
-            "Positional Encoding": "Sinusoidal or learned vectors added to input embeddings to convey sequence order information."
-        }
-    )
-
-    mentor_prompts = [
-        MentorPrompt(
-            prompt_id="m_1",
-            category="questions_to_ask",
-            title="Linear Attention Extensions",
-            description="Since standard self-attention requires quadratic O(n^2) compute, how could sparse or kernelized attention reduce scaling for 100k+ token contexts?",
-            type="inferred",
-            source_refs=["para_3"]
-        ),
-        MentorPrompt(
-            prompt_id="m_2",
-            category="reviewer_concerns",
-            title="Hardware Dependability",
-            description="Results were obtained on NVIDIA P100 GPUs; how do these parallelism advantages translate to memory-constrained edge hardware?",
-            type="inferred",
-            source_refs=["para_2"]
-        )
-    ]
-
-    presentation_brief = PresentationBriefData(
-        title="Presentation Brief: Attention Is All You Need",
-        slide_outlines=[
-            {"slide": 1, "title": "The Bottleneck of RNNs", "points": ["Sequential O(n) training prevents parallel computing", "Vanishing gradients across long sequences"]},
-            {"slide": 2, "title": "The Transformer Architecture", "points": ["Replaces recurrence entirely with Self-Attention", "Multi-Head Attention captures diverse sub-space features"]},
-            {"slide": 3, "title": "Results & Impact", "points": ["28.4 BLEU score on WMT 2014 En-De", "Trained in 12 hours on 8 GPUs", "Foundation for modern LLM architecture"]}
-        ]
-    )
-
     return CanonicalPaper(
         paper_id=DEMO_PAPER_ID,
         filename="Attention_Is_All_You_Need.pdf",
@@ -293,8 +385,5 @@ def get_demo_paper() -> CanonicalPaper:
         claims=claims,
         limitations=limitations,
         concept_map=concept_map,
-        study_mode=study_mode,
-        mentor_prompts=mentor_prompts,
-        presentation_brief=presentation_brief,
         sources_index=sources_index
     )
