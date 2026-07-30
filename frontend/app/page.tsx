@@ -270,6 +270,7 @@ export default function PaperPilotApp() {
         {isPdfPanelOpen && (
           <div style={{ width: '460px', flexShrink: 0 }}>
             <PdfViewerPanel
+              paper={paper}
               paperTitle={paperTitle}
               totalPages={paper?.total_pages || 11}
               activeSourceRef={activeSourceRef}
