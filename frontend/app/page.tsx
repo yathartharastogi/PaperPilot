@@ -1,10 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
-  FileText, Upload, ShieldCheck, AlertTriangle, Image as ImageIcon,
-  Sigma, Network, GraduationCap, Presentation, UserCheck, Columns,
-  PanelRightOpen, PanelRightClose, Sparkles, Home, Command, Search
+  Upload, PanelRightOpen, PanelRightClose, Sparkles, Home
 } from 'lucide-react';
 
 import { LandingPage } from '../components/LandingPage';
@@ -17,8 +15,6 @@ import { LimitationsView } from '../components/views/LimitationsView';
 import { FiguresTablesView } from '../components/views/FiguresTablesView';
 import { EquationTranslatorView } from '../components/views/EquationTranslatorView';
 import { ConceptMapView } from '../components/views/ConceptMapView';
-import { StudyModeView } from '../components/views/StudyModeView';
-import { PresentationBriefView } from '../components/views/PresentationBriefView';
 import { MentorModeView } from '../components/views/MentorModeView';
 import { PaperComparisonView } from '../components/views/PaperComparisonView';
 
@@ -220,8 +216,6 @@ export default function PaperPilotApp() {
           {activeTab === 'figures' && <FiguresTablesView data={{ figures: paper?.figures, tables: paper?.tables }} onSelectSource={handleSelectSource} />}
           {activeTab === 'equations' && <EquationTranslatorView equations={paper?.equations} onSelectSource={handleSelectSource} />}
           {activeTab === 'concept-map' && <ConceptMapView data={paper?.concept_map} onSelectSource={handleSelectSource} />}
-          {activeTab === 'study' && <StudyModeView data={paper?.study_mode} onSelectSource={handleSelectSource} />}
-          {activeTab === 'presentation' && <PresentationBriefView data={paper?.presentation_brief} />}
           {activeTab === 'mentor' && <MentorModeView prompts={paper?.mentor_prompts} onSelectSource={handleSelectSource} />}
           {activeTab === 'comparison' && <PaperComparisonView papers={[paper]} />}
         </div>
@@ -287,15 +281,6 @@ function getMockDemoData() {
       ],
       edges: [{ edge_id: 'e_1', source: 'c_1', target: 'c_2', relationship: 'replaces RNN with' }]
     },
-    study_mode: {
-      flashcards: [{ question: 'What is the sequential operation complexity of Self-Attention vs Recurrent layers?', answer: 'Self-attention is O(1) sequential steps vs O(n) for Recurrent.', explanation: 'Self-attention connects all token pairs in parallel.', source_refs: ['para_3'] }],
-      mcq_quizzes: [{ question: 'What BLEU score did the Transformer achieve on WMT 2014 En-De?', options: ['24.1', '28.4', '31.0'], answer: '28.4', explanation: 'Outperformed previous state of the art.', source_refs: ['para_2'] }],
-      key_terms: { 'Self-Attention': 'Relating different positions of a single sequence to compute a representation.' }
-    },
-    mentor_prompts: [{ prompt_id: 'm_1', category: 'questions_to_ask', title: 'Linear Attention Extensions', description: 'How could linear attention reduce quadratic O(n^2) scaling?', source_refs: ['para_3'] }],
-    presentation_brief: {
-      title: 'Presentation Brief: Attention Is All You Need',
-      slide_outlines: [{ slide: 1, title: 'The Bottleneck of RNNs', points: ['Sequential training prevents parallel processing', 'Vanishing gradients'] }]
-    }
+    mentor_prompts: [{ prompt_id: 'm_1', category: 'questions_to_ask', title: 'Linear Attention Extensions', description: 'How could linear attention reduce quadratic O(n^2) scaling?', source_refs: ['para_3'] }]
   };
 }

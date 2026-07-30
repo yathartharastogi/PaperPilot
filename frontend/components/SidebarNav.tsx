@@ -3,8 +3,7 @@
 import React from 'react';
 import {
   FileText, ShieldCheck, AlertTriangle, Image as ImageIcon,
-  Sigma, Network, GraduationCap, Presentation, UserCheck, Columns,
-  ChevronLeft, ChevronRight, Sparkles, BookOpen
+  Sigma, Network, UserCheck, Columns, ChevronLeft, ChevronRight
 } from 'lucide-react';
 
 interface SidebarNavProps {
@@ -35,13 +34,6 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
         { id: 'figures', label: 'Figures & Tables', icon: ImageIcon },
         { id: 'equations', label: 'Equation Translator', icon: Sigma },
         { id: 'concept-map', label: 'Concept Topology', icon: Network }
-      ]
-    },
-    {
-      title: 'STUDY & PRESENT',
-      items: [
-        { id: 'study', label: 'Active Recall Study', icon: GraduationCap, badge: 'Flashcards' },
-        { id: 'presentation', label: 'Presentation Brief', icon: Presentation }
       ]
     },
     {
