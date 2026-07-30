@@ -38,7 +38,7 @@ export const PdfViewerPanel: React.FC<PdfViewerPanelProps> = ({
 }) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [zoomLevel, setZoomLevel] = useState<number>(100);
-  const [copied, setCopied] = useState<boolean>(false);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Synchronize page when active source ref is selected
@@ -67,15 +67,10 @@ export const PdfViewerPanel: React.FC<PdfViewerPanelProps> = ({
   const pageTables = paper?.tables?.filter((t: any) => t.page === currentPage) || [];
   const pageEquations = paper?.equations?.filter((eq: any) => eq.page === currentPage) || [];
 
-  // Active bounding box overlay
-  const activeBbox = (activeSourceRef && (activeSourceRef.page === currentPage || !activeSourceRef.page))
-    ? activeSourceRef.bbox
-    : null;
-
-  const handleCopySnippet = (text: string) => {
+  const handleCopySnippet = (id: string, text: string) => {
     navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 2000);
   };
 
   return (
@@ -141,7 +136,7 @@ export const PdfViewerPanel: React.FC<PdfViewerPanelProps> = ({
         </div>
       </div>
 
-      {/* Active Source Citation Banner */}
+      {/* Active Citation Tracing Banner */}
       {activeSourceRef && (
         <div style={{
           background: 'linear-gradient(90deg, rgba(6, 182, 212, 0.25), rgba(59, 130, 246, 0.25))',
@@ -156,7 +151,7 @@ export const PdfViewerPanel: React.FC<PdfViewerPanelProps> = ({
           <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 700 }}>
             <Sparkles size={14} /> TRACED SOURCE: #{activeSourceRef.ref_id} (Page {currentPage})
           </span>
-          <span style={{ fontSize: '0.72rem', color: '#cbd5e1', background: 'rgba(6, 182, 212, 0.2)', padding: '2px 8px', borderRadius: '4px' }}>
+          <span style={{ fontSize: '0.72rem', color: '#cbd5e1', background: 'rgba(6, 182, 212, 0.2)', padding: '2px 8px', borderRadius: '4px', fontWeight: 600 }}>
             Layout BBox Highlight Active
           </span>
         </div>
@@ -183,12 +178,12 @@ export const PdfViewerPanel: React.FC<PdfViewerPanelProps> = ({
             minHeight: '700px',
             background: '#0f172a',
             border: '1px solid #1e293b',
-            borderRadius: '10px',
+            borderRadius: '12px',
             boxShadow: '0 12px 35px rgba(0,0,0,0.6)',
             position: 'relative',
             padding: '36px 28px',
             color: '#cbd5e1',
-            fontSize: `${0.85 * (zoomLevel / 100)}rem`,
+            fontSize: `${0.86 * (zoomLevel / 100)}rem`,
             lineHeight: 1.7,
             transition: 'all 0.2s ease'
           }}
@@ -208,50 +203,10 @@ export const PdfViewerPanel: React.FC<PdfViewerPanelProps> = ({
             <span>Page {currentPage} of {totalPages}</span>
           </div>
 
-          {/* Glowing Bounding Box Overlay Layer */}
-          {activeBbox && (
-            <div
-              className="pulsing-bbox"
-              style={{
-                position: 'absolute',
-                left: `${Math.min(85, Math.max(5, (activeBbox.x / 600) * 100))}%`,
-                top: `${Math.min(80, Math.max(8, (activeBbox.y / 800) * 100))}%`,
-                width: `${Math.min(90, Math.max(45, (activeBbox.width / 600) * 100))}%`,
-                height: `${Math.min(45, Math.max(14, (activeBbox.height / 800) * 100))}%`,
-                backgroundColor: 'rgba(6, 182, 212, 0.25)',
-                border: '2px solid #22d3ee',
-                borderRadius: '6px',
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                zIndex: 20,
-                pointerEvents: 'none'
-              }}
-            >
-              <div style={{
-                position: 'absolute',
-                top: '-24px',
-                left: '0',
-                background: '#0891b2',
-                color: '#fff',
-                fontSize: '0.65rem',
-                fontWeight: 700,
-                padding: '2px 8px',
-                borderRadius: '4px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-                whiteSpace: 'nowrap',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.4)'
-              }}>
-                <Bookmark size={10} />
-                <span>GROUNDED SOURCE REF: #{activeSourceRef?.ref_id}</span>
-              </div>
-            </div>
-          )}
-
           {/* Real Section Headers & Paragraph Blocks for Current Page */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             {pageSections.map((secTitle, sIdx) => (
-              <h3 key={sIdx} style={{ fontSize: '1.05rem', fontWeight: 800, color: '#f8fafc', borderBottom: '1px solid #334155', paddingBottom: '6px', marginTop: sIdx > 0 ? '14px' : 0 }}>
+              <h3 key={sIdx} style={{ fontSize: '1.08rem', fontWeight: 800, color: '#f8fafc', borderBottom: '1px solid #334155', paddingBottom: '6px', marginTop: sIdx > 0 ? '14px' : 0 }}>
                 {secTitle}
               </h3>
             ))}
@@ -262,28 +217,52 @@ export const PdfViewerPanel: React.FC<PdfViewerPanelProps> = ({
                 <div
                   key={p.para_id || idx}
                   style={{
-                    background: isTargetPara ? 'rgba(6, 182, 212, 0.15)' : 'rgba(15, 23, 42, 0.4)',
+                    background: isTargetPara ? 'rgba(6, 182, 212, 0.18)' : 'rgba(15, 23, 42, 0.5)',
                     borderLeft: isTargetPara ? '4px solid var(--accent-cyan)' : '2px solid transparent',
-                    padding: '12px 14px',
-                    borderRadius: '8px',
+                    boxShadow: isTargetPara ? '0 0 25px rgba(34, 211, 238, 0.35)' : 'none',
                     border: isTargetPara ? '1px solid var(--accent-cyan)' : '1px solid rgba(255, 255, 255, 0.05)',
-                    transition: 'all 0.2s ease',
+                    padding: '14px 16px',
+                    borderRadius: '10px',
+                    transition: 'all 0.3s ease',
                     position: 'relative'
                   }}
                 >
+                  {/* Bounding Box Citation Badge when Active */}
+                  {isTargetPara && (
+                    <div style={{
+                      position: 'absolute',
+                      top: '-12px',
+                      left: '12px',
+                      background: 'linear-gradient(135deg, #06b6d4, #2563eb)',
+                      color: '#fff',
+                      fontSize: '0.68rem',
+                      fontWeight: 800,
+                      padding: '3px 10px',
+                      borderRadius: '4px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      boxShadow: '0 4px 12px rgba(6, 182, 212, 0.4)',
+                      zIndex: 10
+                    }}>
+                      <Bookmark size={10} />
+                      <span>GROUNDED SOURCE REF: #{p.para_id?.toUpperCase()}</span>
+                    </div>
+                  )}
+
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                    <span style={{ fontSize: '0.68rem', fontWeight: 700, color: isTargetPara ? 'var(--accent-cyan)' : '#64748b', fontFamily: 'var(--font-mono)' }}>
+                    <span style={{ fontSize: '0.7rem', fontWeight: 800, color: isTargetPara ? 'var(--accent-cyan)' : '#64748b', fontFamily: 'var(--font-mono)' }}>
                       [{p.para_id?.toUpperCase() || `P${idx+1}`}]
                     </span>
                     <button
-                      onClick={() => handleCopySnippet(p.text)}
+                      onClick={() => handleCopySnippet(p.para_id, p.text)}
                       style={{ background: 'transparent', border: 'none', color: '#64748b', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '2px', fontSize: '0.68rem' }}
                       title="Copy paragraph text"
                     >
-                      {copied ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
+                      {copiedId === p.para_id ? <Check size={12} style={{ color: '#34d399' }} /> : <Copy size={12} />}
                     </button>
                   </div>
-                  <p style={{ color: isTargetPara ? '#f8fafc' : '#cbd5e1', fontWeight: isTargetPara ? 500 : 400, lineHeight: 1.65 }}>
+                  <p style={{ color: isTargetPara ? '#f8fafc' : '#cbd5e1', fontWeight: isTargetPara ? 600 : 400, lineHeight: 1.7 }}>
                     {p.text}
                   </p>
                 </div>

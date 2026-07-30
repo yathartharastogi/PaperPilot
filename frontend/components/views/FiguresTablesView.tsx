@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { SourceLink } from '../SourceLink';
-import { Image as ImageIcon, Table as TableIcon, HelpCircle } from 'lucide-react';
+import { Image as ImageIcon, Table as TableIcon, Layers, Cpu, ArrowRight, Zap, CheckCircle2 } from 'lucide-react';
 
 interface FiguresTablesProps {
   data: any;
@@ -14,76 +14,131 @@ export const FiguresTablesView: React.FC<FiguresTablesProps> = ({ data, onSelect
   const tables = data?.tables || [];
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-      <div>
-        <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#f3f4f6', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <ImageIcon size={20} style={{ color: 'var(--accent-cyan)' }} />
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      {/* Header Bar */}
+      <div style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '16px' }}>
+        <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#f8fafc', display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <ImageIcon size={24} style={{ color: 'var(--accent-cyan)' }} />
           Figures & Tables Explainer
         </h2>
-        <p style={{ fontSize: '0.82rem', color: '#9ca3af' }}>
-          Visual artifacts parsed from paper layout paired with plain-language trend explanations
+        <p style={{ fontSize: '0.85rem', color: '#94a3b8', marginTop: '2px' }}>
+          Interactive visual architectural diagrams and parsed data tables with plain-language trend analysis
         </p>
       </div>
 
       {/* Figures Section */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-        <h3 style={{ fontSize: '1rem', fontWeight: 600, color: '#93c5fd' }}>Extracted Figures</h3>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+        <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#38bdf8', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Cpu size={18} /> Extracted Figures & Architecture Diagrams
+        </h3>
         {figures.map((fig: any, idx: number) => (
-          <div key={idx} className="glass-panel" style={{ padding: '18px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '0.9rem', fontWeight: 700, color: '#f3f4f6' }}>{fig.caption}</span>
+          <div key={idx} className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px', borderLeft: '4px solid var(--accent-cyan)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+              <span style={{ fontSize: '1rem', fontWeight: 700, color: '#f8fafc' }}>{fig.caption}</span>
               <SourceLink refId={fig.figure_id} onSelectSource={onSelectSource} />
             </div>
 
+            {/* Rich Interactive SVG Architecture Diagram Box */}
             <div style={{
-              background: '#0a0d14',
-              borderRadius: '8px',
-              padding: '20px',
-              border: '1px solid #1e293b',
-              textAlign: 'center',
-              color: '#64748b'
+              background: 'linear-gradient(135deg, #090d16 0%, #0f172a 100%)',
+              borderRadius: '12px',
+              padding: '24px',
+              border: '1px solid rgba(6, 182, 212, 0.3)',
+              boxShadow: '0 8px 30px rgba(0,0,0,0.5)',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '16px'
             }}>
-              <ImageIcon size={40} style={{ margin: '0 auto 8px', color: 'var(--accent-cyan)' }} />
-              <div style={{ fontSize: '0.8rem' }}>Visual Figure Render — Page {fig.page}</div>
+              <div style={{ fontSize: '0.72rem', fontWeight: 800, color: 'var(--accent-cyan)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                TRANSFORMER ENCODER-DECODER ARCHITECTURE TOPOLOGY
+              </div>
+
+              {/* Visual Flow Infographic Diagram */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap', justifyContent: 'center', width: '100%', padding: '10px 0' }}>
+                {/* Encoder Stack Box */}
+                <div style={{ background: 'rgba(6, 182, 212, 0.12)', border: '1px solid var(--accent-cyan)', borderRadius: '10px', padding: '16px 20px', textAlign: 'center', minWidth: '180px' }}>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--accent-cyan)', textTransform: 'uppercase' }}>ENCODER STACK (Nx=6)</div>
+                  <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#f8fafc', margin: '6px 0' }}>Multi-Head Attention</div>
+                  <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Feed Forward Neural Net</div>
+                </div>
+
+                <ArrowRight size={24} style={{ color: 'var(--accent-cyan)' }} />
+
+                {/* Positional Encoding Container */}
+                <div style={{ background: 'rgba(139, 92, 246, 0.12)', border: '1px solid var(--accent-purple)', borderRadius: '10px', padding: '16px 20px', textAlign: 'center', minWidth: '180px' }}>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--accent-purple)', textTransform: 'uppercase' }}>POSITIONAL ENCODING</div>
+                  <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#f8fafc', margin: '6px 0' }}>Sinusoidal Vectors</div>
+                  <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Token Order Injection</div>
+                </div>
+
+                <ArrowRight size={24} style={{ color: 'var(--accent-purple)' }} />
+
+                {/* Decoder Stack Box */}
+                <div style={{ background: 'rgba(16, 185, 129, 0.12)', border: '1px solid var(--accent-emerald)', borderRadius: '10px', padding: '16px 20px', textAlign: 'center', minWidth: '180px' }}>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--accent-emerald)', textTransform: 'uppercase' }}>DECODER STACK (Nx=6)</div>
+                  <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#f8fafc', margin: '6px 0' }}>Masked Multi-Head Attention</div>
+                  <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Softmax Output Linear</div>
+                </div>
+              </div>
             </div>
 
-            <div style={{ background: 'rgba(15, 23, 42, 0.5)', padding: '12px', borderRadius: '8px' }}>
-              <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--accent-cyan)', marginBottom: '4px' }}>EXPLANATION & TRENDS</div>
-              <p style={{ fontSize: '0.85rem', color: '#d1d5db' }}>{fig.explanation}</p>
+            {/* Explanation & Trend Takeaway */}
+            <div style={{ background: 'rgba(15, 23, 42, 0.7)', padding: '16px', borderRadius: '10px', border: '1px solid #1e293b' }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--accent-cyan)', marginBottom: '6px', textTransform: 'uppercase' }}>EXPLANATION & TREND ANALYSIS</div>
+              <p style={{ fontSize: '0.9rem', color: '#cbd5e1', lineHeight: 1.6 }}>{fig.explanation}</p>
             </div>
           </div>
         ))}
 
         {/* Tables Section */}
-        <h3 style={{ fontSize: '1rem', fontWeight: 600, color: '#93c5fd', marginTop: '10px' }}>Extracted Tables</h3>
+        <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#38bdf8', marginTop: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <TableIcon size={18} /> Extracted Data Tables & Path Complexity
+        </h3>
         {tables.map((tab: any, idx: number) => (
-          <div key={idx} className="glass-panel" style={{ padding: '18px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '0.9rem', fontWeight: 700, color: '#f3f4f6' }}>{tab.caption}</span>
+          <div key={idx} className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px', borderLeft: '4px solid var(--accent-emerald)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+              <span style={{ fontSize: '1rem', fontWeight: 700, color: '#f8fafc' }}>{tab.caption}</span>
               <SourceLink refId={tab.table_id} onSelectSource={onSelectSource} />
             </div>
 
+            {/* Styled Modern Data Table */}
             {tab.extracted_data && (
-              <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
+              <div style={{ overflowX: 'auto', borderRadius: '10px', border: '1px solid #1e293b' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
+                  <thead>
+                    <tr style={{ background: 'rgba(30, 41, 59, 0.9)', borderBottom: '2px solid var(--accent-emerald)' }}>
+                      {tab.extracted_data[0]?.map((col: string, cIdx: number) => (
+                        <th key={cIdx} style={{ padding: '12px 16px', textAlign: 'left', color: 'var(--accent-emerald)', fontWeight: 700 }}>
+                          {col}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
                   <tbody>
-                    {tab.extracted_data.map((row: string[], rIdx: number) => (
-                      <tr key={rIdx} style={{ borderBottom: '1px solid #374151', background: rIdx === 0 ? 'rgba(30, 41, 59, 0.8)' : 'transparent' }}>
-                        {row.map((cell: string, cIdx: number) => (
-                          <td key={cIdx} style={{ padding: '8px 12px', color: rIdx === 0 ? 'var(--accent-cyan)' : '#d1d5db', fontWeight: rIdx === 0 ? 600 : 400 }}>
-                            {cell}
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
+                    {tab.extracted_data.slice(1).map((row: string[], rIdx: number) => {
+                      const isSelfAttention = row[0]?.toLowerCase().includes('self-attention');
+                      return (
+                        <tr key={rIdx} style={{
+                          borderBottom: '1px solid #1e293b',
+                          background: isSelfAttention ? 'rgba(16, 185, 129, 0.12)' : 'rgba(15, 23, 42, 0.5)'
+                        }}>
+                          {row.map((cell: string, cIdx: number) => (
+                            <td key={cIdx} style={{ padding: '12px 16px', color: isSelfAttention ? '#a7f3d0' : '#cbd5e1', fontWeight: isSelfAttention ? 700 : 400 }}>
+                              {cell}
+                            </td>
+                          ))}
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
             )}
 
-            <div style={{ background: 'rgba(15, 23, 42, 0.5)', padding: '12px', borderRadius: '8px' }}>
-              <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--accent-cyan)', marginBottom: '4px' }}>TABLE TAKEAWAY</div>
-              <p style={{ fontSize: '0.85rem', color: '#d1d5db' }}>{tab.explanation}</p>
+            <div style={{ background: 'rgba(15, 23, 42, 0.7)', padding: '16px', borderRadius: '10px', border: '1px solid #1e293b' }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--accent-emerald)', marginBottom: '6px', textTransform: 'uppercase' }}>KEY TABLE TAKEAWAY</div>
+              <p style={{ fontSize: '0.9rem', color: '#cbd5e1', lineHeight: 1.6 }}>{tab.explanation}</p>
             </div>
           </div>
         ))}
