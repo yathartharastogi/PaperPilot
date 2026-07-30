@@ -4,11 +4,12 @@ import React, { useState, useEffect } from 'react';
 import {
   FileText, Upload, ShieldCheck, AlertTriangle, Image as ImageIcon,
   Sigma, Network, GraduationCap, Presentation, UserCheck, Columns,
-  PanelRightOpen, PanelRightClose, Sparkles, Home, ArrowLeft
+  PanelRightOpen, PanelRightClose, Sparkles, Home, Command, Search
 } from 'lucide-react';
 
 import { LandingPage } from '../components/LandingPage';
 import { UploadScreen } from '../components/UploadScreen';
+import { SidebarNav } from '../components/SidebarNav';
 import { PdfViewerPanel } from '../components/PdfViewerPanel';
 import { ExecutiveBriefView } from '../components/views/ExecutiveBriefView';
 import { ClaimsExplorerView } from '../components/views/ClaimsExplorerView';
@@ -27,6 +28,7 @@ export default function PaperPilotApp() {
   const [paper, setPaper] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [isPdfPanelOpen, setIsPdfPanelOpen] = useState<boolean>(true);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(false);
   const [activeSourceRef, setActiveSourceRef] = useState<any>(null);
 
   // Fetch benchmark demo paper
@@ -94,22 +96,21 @@ export default function PaperPilotApp() {
   const paperTitle = paper?.metadata?.title || paper?.filename || 'Attention Is All You Need';
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--bg-primary)' }}>
-      {/* Dashboard Top Header */}
+    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--bg-primary)', overflow: 'hidden' }}>
+      {/* Clean Minimalist Header */}
       <header style={{
-        height: '60px',
+        height: '56px',
         borderBottom: '1px solid var(--border-color)',
         padding: '0 20px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        background: 'rgba(15, 23, 42, 0.85)',
+        background: 'rgba(15, 23, 42, 0.95)',
         backdropFilter: 'blur(12px)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 50
+        zIndex: 50,
+        flexShrink: 0
       }}>
-        {/* Brand & Landing Back */}
+        {/* Brand & Home Navigation */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <button
             onClick={() => setViewState('landing')}
@@ -129,17 +130,19 @@ export default function PaperPilotApp() {
             <span>Home</span>
           </button>
 
-          <div style={{ height: '20px', width: '1px', background: 'var(--border-color)' }} />
+          <div style={{ height: '18px', width: '1px', background: 'var(--border-color)' }} />
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Sparkles size={18} style={{ color: 'var(--accent-cyan)' }} />
+            <div style={{ background: 'linear-gradient(135deg, #06b6d4, #3b82f6)', padding: '5px', borderRadius: '6px', color: '#fff', display: 'flex' }}>
+              <Sparkles size={16} />
+            </div>
             <span style={{ fontSize: '1.1rem', fontWeight: 800 }} className="gradient-text">
               PaperPilot
             </span>
           </div>
         </div>
 
-        {/* Paper Title Badge & Actions */}
+        {/* Paper Title & Main Action Buttons */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div style={{
             fontSize: '0.82rem',
@@ -149,7 +152,7 @@ export default function PaperPilotApp() {
             padding: '4px 12px',
             borderRadius: '6px',
             border: '1px solid var(--border-color)',
-            maxWidth: '320px',
+            maxWidth: '300px',
             whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis'
@@ -167,7 +170,7 @@ export default function PaperPilotApp() {
               borderRadius: '6px',
               cursor: 'pointer',
               fontSize: '0.82rem',
-              fontWeight: 600,
+              fontWeight: 700,
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
@@ -175,13 +178,13 @@ export default function PaperPilotApp() {
             }}
           >
             <Upload size={14} />
-            <span>Upload New PDF</span>
+            <span>Upload Paper</span>
           </button>
 
           <button
             onClick={() => setIsPdfPanelOpen(!isPdfPanelOpen)}
             style={{
-              background: 'var(--bg-card)',
+              background: 'rgba(30, 41, 59, 0.8)',
               border: '1px solid var(--border-color)',
               color: '#d1d5db',
               padding: '6px 12px',
@@ -194,66 +197,23 @@ export default function PaperPilotApp() {
             }}
           >
             {isPdfPanelOpen ? <PanelRightClose size={16} /> : <PanelRightOpen size={16} />}
-            <span>{isPdfPanelOpen ? 'Hide PDF' : 'Show PDF'}</span>
+            <span>{isPdfPanelOpen ? 'Hide Reader' : 'Show Reader'}</span>
           </button>
         </div>
       </header>
 
-      {/* Feature Modes Navigation Bar */}
-      <nav style={{
-        background: 'rgba(15, 23, 42, 0.95)',
-        borderBottom: '1px solid var(--border-color)',
-        padding: '8px 20px',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '6px',
-        overflowX: 'auto'
-      }}>
-        {[
-          { id: 'brief', label: 'Executive Brief', icon: FileText },
-          { id: 'claims', label: 'Claims Explorer', icon: ShieldCheck },
-          { id: 'limitations', label: 'Limitations', icon: AlertTriangle },
-          { id: 'figures', label: 'Figures & Tables', icon: ImageIcon },
-          { id: 'equations', label: 'Equations', icon: Sigma },
-          { id: 'concept-map', label: 'Concept Map', icon: Network },
-          { id: 'study', label: 'Study Mode', icon: GraduationCap },
-          { id: 'presentation', label: 'Presentation', icon: Presentation },
-          { id: 'mentor', label: 'Mentor Mode', icon: UserCheck },
-          { id: 'comparison', label: 'Comparison', icon: Columns }
-        ].map((mode) => {
-          const Icon = mode.icon;
-          const isActive = activeTab === mode.id;
-          return (
-            <button
-              key={mode.id}
-              onClick={() => setActiveTab(mode.id)}
-              style={{
-                background: isActive ? 'var(--accent-cyan)' : 'transparent',
-                color: isActive ? '#000' : '#94a3b8',
-                border: 'none',
-                padding: '6px 12px',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontWeight: isActive ? 700 : 500,
-                fontSize: '0.82rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                whiteSpace: 'nowrap',
-                transition: 'all 0.15s ease'
-              }}
-            >
-              <Icon size={14} />
-              <span>{mode.label}</span>
-            </button>
-          );
-        })}
-      </nav>
+      {/* Main Workspace Layout (Sidebar + Mode Canvas + Split PDF Reader) */}
+      <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
+        {/* Modern Left Sidebar Navigation */}
+        <SidebarNav
+          activeTab={activeTab}
+          onSelectTab={setActiveTab}
+          isCollapsed={isSidebarCollapsed}
+          onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+        />
 
-      {/* Main Workspace Split View */}
-      <main style={{ flex: 1, display: 'flex', padding: '20px', gap: '20px', overflow: 'hidden' }}>
-        {/* Left Feature View */}
-        <div style={{ flex: 1, minWidth: 0, overflowY: 'auto', paddingRight: '4px' }}>
+        {/* Middle Mode Canvas Container */}
+        <div style={{ flex: 1, minWidth: 0, overflowY: 'auto', padding: '24px 28px' }}>
           {activeTab === 'brief' && <ExecutiveBriefView data={paper?.executive_brief} onSelectSource={handleSelectSource} />}
           {activeTab === 'claims' && <ClaimsExplorerView claims={paper?.claims} onSelectSource={handleSelectSource} />}
           {activeTab === 'limitations' && <LimitationsView data={paper?.limitations} onSelectSource={handleSelectSource} />}
@@ -268,7 +228,7 @@ export default function PaperPilotApp() {
 
         {/* Right Collapsible PDF Viewer Split Panel */}
         {isPdfPanelOpen && (
-          <div style={{ width: '460px', flexShrink: 0 }}>
+          <div style={{ width: '460px', flexShrink: 0, padding: '16px 16px 16px 0' }}>
             <PdfViewerPanel
               paper={paper}
               paperTitle={paperTitle}
@@ -278,7 +238,7 @@ export default function PaperPilotApp() {
             />
           </div>
         )}
-      </main>
+      </div>
     </div>
   );
 }
